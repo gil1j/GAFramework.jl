@@ -1,0 +1,4 @@
+name = "GAFramework"
+uuid = "0b10d19a-53ea-4f7c-be35-fc0c086cac57"
+authors = ["Jonas Gillain <jonasgillain@gmail.com>"]
+version = "0.1.0"
