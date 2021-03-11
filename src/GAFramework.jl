@@ -59,9 +59,9 @@ begin
 			for i in 1:2:length(parents)
 
 				p1 = parents[i]
-				if i == length(parents) && i-1 != 0
+				if i == length(parents)
 					p2 = parents[i-1]
-				elseif i+1 <= length(parents)
+				else
 					p2 = parents[i+1]
 				end
 				
