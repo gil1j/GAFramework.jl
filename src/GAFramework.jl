@@ -9,22 +9,9 @@ module GAFramework
 
 import Base.@kwdef
 
-export BFProg, GAOptions, myGA
+export GAOptions, myGA
 
-"struct for the usage of brainfuck programs in a genetic algorithm, storing the program and its fitness"
 
-mutable struct BFProg
-	program
-	fitness::Int64
-	
-	function BFProg(maxProgSize::Int64)
-		return new(generate_rand_prog(maxProgSize),10^10)
-	end
-	
-	function BFProg(program,fitness::Int64)
-		return new(program,fitness)
-	end
-end
 
 "struct for the usage of myGA(), containing all the necessary options"
 
