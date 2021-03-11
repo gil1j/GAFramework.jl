@@ -59,10 +59,10 @@ begin
 			for i in 1:2:length(parents)
 
 				p1 = parents[i]
-				if options.popSize % 2 == 0
-					p2 = parents[i+1]
-				else
+				if i == length(parents)
 					p2 = parents[i-1]
+				else
+					p2 = parents[i+1]
 				end
 				
 				if rand() <= options.crossoverRate
