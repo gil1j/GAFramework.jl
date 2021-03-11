@@ -9,12 +9,13 @@ module GAFramework
 
 import Base.@kwdef
 
+using Random
+
 export GAOptions, myGA
 
 
 
 "struct for the usage of myGA(), containing all the necessary options"
-
 @kwdef mutable struct GAOptions
 	popSize::Int64=100
 	maxProgSize::Int64=500
@@ -31,7 +32,6 @@ begin
 	using TickTock
 	
 	"framework for Genetic Algorithms, developed primarily for usage with Brainfuck programs as individuals"
-	
 	function myGA(generator,fitness,crossover,selection,mutation,options)
 		tick()
 		
