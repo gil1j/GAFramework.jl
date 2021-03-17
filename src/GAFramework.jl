@@ -68,8 +68,8 @@ begin
 				if rand() <= options.crossoverRate
 	
 					c1_prog,c2_prog = crossover(p1.program,p2.program)
-					c1 = generator(c1_prog,0)
-					c2 = generator(c2_prog,0)
+					c1 = generator(c1_prog,10^10)
+					c2 = generator(c2_prog,10^10)
 	
 					append!(childs,[c1,c2])
 				else
@@ -86,7 +86,7 @@ begin
 				
 				if rand() <= options.mutationRate
 					mut_prog = mutation(childs[i].program)
-					mut = generator(mut_prog,0)
+					mut = generator(mut_prog,10^10)
 					
 					childs[i] = mut
 				end
@@ -99,7 +99,7 @@ begin
 			#fitness
 			
 			Threads.@threads for i in 1:length(childs)
-				if childs[i].fitness == 0
+				if childs[i].fitness == 10^10
 					childs[i].fitness = fitness(childs[i].program,options.progTicksLim)
 				end
 			end
@@ -122,7 +122,7 @@ begin
 			
 			#data
 			
-			bestFit = maximum(fitChilds)
+			bestFit = minimum(fitChilds)
 			bestInd = childs[findfirst(fitChilds.==bestFit)].program
 			elapsedTime = peektimer()
 			
