@@ -2,3 +2,6 @@ name = "GAFramework"
 uuid = "0b10d19a-53ea-4f7c-be35-fc0c086cac57"
 authors = ["Jonas Gillain <jonasgillain@gmail.com>"]
 version = "0.1.0"
+
+[deps]
+TickTock = "9ff05d80-102d-5586-aa04-3a8bd1a90d20"
