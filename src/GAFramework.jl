@@ -11,7 +11,7 @@ import Base.@kwdef
 
 using Random
 
-export GAOptions, myGA
+export GAOptions, myGA, onePt_CX, KB_CX, KB_mut, roulette, trivial
 
 
 
@@ -158,7 +158,7 @@ end
 # Crossover
 
 "One Point Crossover"
-function OnePt_CX(p1,p2)
+function onePt_CX(p1,p2)
 	if length(p1)>1 && length(p2)>1
 		marker1 = rand(1:min(length(p1)-1,length(p2)-1))
 
@@ -193,7 +193,7 @@ end
 					
 "mutation function as implemented by Kory Becker in her AI-programmer.
 4 equiprobable mutations : delete, insert, modify or shift"
-function mut(str)
+function KB_mut(str)
 	str_mut = collect(str)
 	r = rand()
 
@@ -240,7 +240,7 @@ begin
 end
 					
 "trivial selection"
-function mySelection(fitPop,popSize)
+function trivial(fitPop,popSize)
 	indexSorted = sortperm(fitPop)
 	toKeep = indexSorted[1:popSize]
 	
