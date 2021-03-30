@@ -152,7 +152,101 @@ begin
 		end
 	end
 end
+					
+# Library of crossover / mutation / selection functions
+					
+# Crossover
 
+"One Point Crossover"
+function OnePt_CX(p1,p2)
+	if length(p1)>1 && length(p2)>1
+		marker1 = rand(1:min(length(p1)-1,length(p2)-1))
+
+
+		c1 = p1[1:marker1]*p2[marker1+1:end]
+		c2 = p2[1:marker1]*p1[marker1+1:end]
+	else
+		c1 = p1
+		c2 = p2
+	end
+
+	return c1,c2
+end
+					
+function KB_CX(p1,p2)
+	if length(p1)>1 && length(p2)>1
+	
+		marker1 = rand(1:length(p1)-1)
+
+		c1 = p1[1:marker1]*join(rand(['>','<','+','-','.',',','[',']'],length(p1[marker1+1:end])))
+		c2 = join(rand(['>','<','+','-','.',',','[',']'],length(p1[1:marker1])))*p1[marker1+1:end]
+	
+	else
+		c1 = p1
+		c2 = p2
+	end
+	
+	return c1,c2
+end
+
+# Mutation
+					
+"mutation function as implemented by Kory Becker in her AI-programmer.
+4 equiprobable mutations : delete, insert, modify or shift"
+function mut(str)
+	str_mut = collect(str)
+	r = rand()
+
+	if r<=0.25 && length(str_mut) > 1 #delete
+		i = rand(1:length(str_mut))
+		deleteat!(str_mut,i)
+	elseif r<=0.5 #insert
+		i = rand(1:length(str_mut)+1)
+		insert!(str_mut,i,rand(['>','<','+','-','.',',','[',']']))
+	elseif r<=0.75 #modify
+		i = rand(1:length(str))
+		str_mut[i] = rand(['>','<','+','-','.',',','[',']'])
+	else #shift
+		if rand()<0.5
+			str_mut = circshift(str_mut,1)
+		else
+			str_mut = circshift(str_mut,-1)
+		end
+	end
+
+	return join(str_mut)
+end
+					
+# Selection
+					
+begin
+	using StatsBase
+	
+	"roulette selection, probability of an individual being selected is proportional to its fitness. Note : roulette selection kills strict elitism"
+	function roulette(fitPop, N)
+		fitPopRel = abs.(fitPop.-maximum(fitPop))
+		fitPopRel = fitPopRel .+ 0.001
+		prob = Weights(fitPopRel./sum(fitPopRel))
+		selectionFit = sample(fitPopRel,prob,N,replace=false)
+
+		selectionInd = []
+		for i in 1:length(selectionFit)
+			append!(selectionInd,[findfirst(fitPopRel.==selectionFit[i])])
+			fitPopRel[findfirst(fitPopRel.==selectionFit[i])] = -1
+		end
+
+		return selectionInd
+	end
+end
+					
+"trivial selection"
+function mySelection(fitPop,popSize)
+	indexSorted = sortperm(fitPop)
+	toKeep = indexSorted[1:popSize]
+	
+	return toKeep
+end
+					
 end
 
 # ╔═╡ Cell order:
