@@ -38,7 +38,7 @@ begin
 		pop = [generator(options.maxProgSize) for i in 1:options.popSize]
 		
 		Threads.@threads for i in 1:length(pop)
-			if pop[i].fitness == 0
+			if pop[i].fitness == 10^10
 				pop[i].fitness = fitness(pop[i].program,options.progTicksLim)
 			end
 		end
@@ -110,7 +110,7 @@ begin
 				fitParents[i] = parents[i].fitness
 			end
 			
-			indexElite = selection(fitParents,Int(round(length(parents)*options.elitism)))
+			indexElite = trivial(fitParents,Int(round(length(parents)*options.elitism)))
 			
 			append!(childs,parents[indexElite])
 			
