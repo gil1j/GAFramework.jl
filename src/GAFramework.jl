@@ -35,10 +35,10 @@ begin
 	function myGA(generator,fitness,crossover,selection,mutation,options)
 		tick()
 		
-		pop = [generator(options.maxProgSize) for i in 1:options.popSize]
+		pop = [generator(options.maxProgSize) for i in 1:options.popSize] # Generate random population
 		
-		Threads.@threads for i in 1:length(pop)
-			if pop[i].fitness == 10^10
+		Threads.@threads for i in 1:length(pop) # First evaluation of random population, using @threads for parallelization
+			if pop[i].fitness == 10^10 # 10^10 is the chosen fitness for programs that have not been evaluated yet
 				pop[i].fitness = fitness(pop[i].program,options.progTicksLim)
 			end
 		end
@@ -47,16 +47,16 @@ begin
 		
 		gen = 0
 		
-		while(!stop)
+		while(!stop) # Main loop
 			gen += 1
 			
 			parents = shuffle(pop)
 			
 			childs = []
 			
-			#crossover
+			# Crossover
 			
-			for i in 1:2:length(parents)
+			for i in 1:2:length(parents) # Crossover takes 2 parents as input, which is a pretty standard choice
 
 				p1 = parents[i]
 				if i == length(parents)
@@ -80,7 +80,7 @@ begin
 				end
 			end
 			
-			#mutation
+			# Mutation
 			
 			for i in 1:length(childs)
 				
@@ -96,9 +96,9 @@ begin
 				append!(childs,[generator(options.maxProgSize) for i in 1:options.popSize-length(childs)])
 			end
 			
-			#fitness
+			# Fitness
 			
-			Threads.@threads for i in 1:length(childs)
+			Threads.@threads for i in 1:length(childs) # @threads for parallelization
 				if childs[i].fitness == 10^10
 					childs[i].fitness = fitness(childs[i].program,options.progTicksLim)
 				end
@@ -110,7 +110,9 @@ begin
 				fitParents[i] = parents[i].fitness
 			end
 			
-			indexElite = trivial(fitParents,Int(round(length(parents)*options.elitism)))
+			# Elistism
+			
+			indexElite = trivial(fitParents,Int(round(length(parents)*options.elitism))) # Trivial selection for strict elitism
 			
 			append!(childs,parents[indexElite])
 			
@@ -120,17 +122,17 @@ begin
 				fitChilds[i] = childs[i].fitness
 			end
 			
-			#data
+			# Data
 			
 			bestFit = minimum(fitChilds)
 			bestInd = childs[findfirst(fitChilds.==bestFit)].program
 			elapsedTime = peektimer()
 			
-			if gen % options.showEvery == 0
+			if gen % options.showEvery == 0 # Show data every x generation
 				@show bestFit,bestInd,elapsedTime,gen
 			end
 			
-			#selection
+			# Selection
 			
 			indexToKeep = selection(fitChilds,options.popSize)
 			indexToDelete = [x for x ∈ 1:length(childs) if x ∉ indexToKeep]
@@ -138,7 +140,7 @@ begin
 			deleteat!(childs,indexToDelete)
 			pop = childs
 			
-			#stop criterion
+			# Stop criterion
 			
 			if gen > options.maxGen
 				stop = true
