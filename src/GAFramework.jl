@@ -11,7 +11,7 @@ import Base.@kwdef
 
 using Random
 
-export GAOptions, myGA, onePt_CX, KB_CX, KB_mut, roulette, trivial
+export GAOptions, myGA, onePt_CX, KB_CX, KB_mut, roulette, trivial, pPt_CX
 
 
 
@@ -187,6 +187,93 @@ function KB_CX(p1,p2)
 		c1 = p1
 		c2 = p2
 	end
+	
+	return c1,c2
+end
+					
+function pPt_CX(p1,p2)
+	pcut = 0.1
+	
+	p1_c = collect(p1)
+	p2_c = collect(p2)
+	
+	c1 = []
+	c2 = []
+	
+	min_len = minimum([length(p1),length(p2)])
+	
+	prev_cut = 0
+	for i in 1:min_len
+		if rand()<pcut
+			r = rand()
+			
+			if r<(1/3)
+				append!(c1,rand(['>','<','+','-','.',',','[',']'],i-prev_cut))
+				append!(c2,rand(['>','<','+','-','.',',','[',']'],i-prev_cut))
+				prev_cut = i
+			elseif r<(2/3)
+				append!(c1,p1_c[prev_cut+1:i])
+				append!(c2,p2_c[prev_cut+1:i])
+				prev_cut = i
+			else
+				append!(c1,p2_c[prev_cut+1:i])
+				append!(c2,p1_c[prev_cut+1:i])
+				prev_cut = i
+			end
+		end
+	end
+	
+	r = rand()
+			
+	if r<(1/3)
+		append!(c1,rand(['>','<','+','-','.',',','[',']'],min_len-prev_cut))
+		append!(c2,rand(['>','<','+','-','.',',','[',']'],min_len-prev_cut))
+	elseif r<(2/3)
+		append!(c1,p1_c[prev_cut+1:min_len])
+		append!(c2,p2_c[prev_cut+1:min_len])
+	else
+		append!(c1,p2_c[prev_cut+1:min_len])
+		append!(c2,p1_c[prev_cut+1:min_len])
+	end
+	
+	if length(p1)>length(p2)
+		r = rand()
+		r2 = rand()
+			
+		if r<(1/2)
+			if r2<(1/2)
+				append!(c1,rand(['>','<','+','-','.',',','[',']'],length(p1)-length(p2)))
+			else
+				append!(c2,rand(['>','<','+','-','.',',','[',']'],length(p1)-length(p2)))
+			end
+		else
+			if r2<(1/2)
+				append!(c1,p1_c[min_len+1:end])
+			else
+				append!(c2,p1_c[min_len+1:end])
+			end
+		end
+	else
+		r = rand()
+		r2 = rand()
+			
+		if r<(1/2)
+			if r2<(1/2)
+				append!(c1,rand(['>','<','+','-','.',',','[',']'],length(p2)-length(p1)))
+			else
+				append!(c2,rand(['>','<','+','-','.',',','[',']'],length(p2)-length(p1)))
+			end
+		else
+			if r2<(1/2)
+				append!(c1,p2_c[min_len+1:end])
+			else
+				append!(c2,p2_c[min_len+1:end])
+			end
+		end
+	end
+	
+	c1 = join(c1)
+	c2 = join(c2)
 	
 	return c1,c2
 end
