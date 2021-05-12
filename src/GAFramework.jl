@@ -191,9 +191,7 @@ function KB_CX(p1,p2)
 	return c1,c2
 end
 					
-function pPt_CX(p1,p2)
-	pcut = 0.1
-	
+function pPt_CX(p1,p2,pcut)
 	p1_c = collect(p1)
 	p2_c = collect(p2)
 	
